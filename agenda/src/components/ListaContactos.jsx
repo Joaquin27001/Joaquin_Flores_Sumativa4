@@ -152,6 +152,21 @@ export function ListaContactos() {
         await cargarContactos();
     }
 
+    async function eliminarDatoContacto(idDatoContacto) {
+        const { error: deleteError } = await supabase
+            .from('dato_contacto')
+            .delete()
+            .eq('id_dato_contacto', idDatoContacto);
+
+        if (deleteError) {
+            setError(deleteError.message);
+            return;
+        }
+
+        setError('');
+        await cargarContactos();
+    }
+
     async function eliminarContacto(idContacto) {
         // Primero elimina los datos relacionados y luego el contacto principal.
         const { error: deleteDataError } = await supabase
@@ -249,7 +264,8 @@ export function ListaContactos() {
                                     key={contacto.id_contacto}
                                     contacto={contacto}
                                     obtenerValorDato={obtenerValorDato}
-                                    onEliminar={eliminarContacto}
+                                    onEliminarContacto={eliminarContacto}
+                                    onEliminarDato={eliminarDatoContacto}
                                 />
                             ))}
                         </ul>
