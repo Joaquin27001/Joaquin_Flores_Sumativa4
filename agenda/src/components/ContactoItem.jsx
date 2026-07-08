@@ -1,63 +1,78 @@
-import React from "react";
+import React from 'react';
 
-export function ContactoItem({ contacto, obtenerValorDato, onEliminar }) {
+export function ContactoItem({ contacto, obtenerValorDato, onEliminarContacto, onEliminarDato }) {
     // Devuelve el nombre visible del dato según el campo almacenado.
     function obtenerEtiquetaDato(dato) {
         if (dato.correo) {
-            return "correo";
+            return 'correo';
         }
 
         if (dato.telefono) {
-            return "telefono";
+            return 'telefono';
         }
 
         if (dato.direccion) {
-            return "dirección postal";
+            return 'dirección postal';
         }
 
-        return "dato";
+        return 'dato';
     }
 
     // Asigna una clase visual al tipo de dato (Personal, Trabajo o Casa).
     function obtenerClaseTipo(tipo) {
-        if (tipo === "Personal") {
-            return "dato-tipo dato-tipo--personal";
+        if (tipo === 'Personal') {
+            return 'dato-tipo dato-tipo--personal';
         }
 
-        if (tipo === "Trabajo") {
-            return "dato-tipo dato-tipo--trabajo";
+        if (tipo === 'Trabajo') {
+            return 'dato-tipo dato-tipo--trabajo';
         }
 
-        if (tipo === "Casa") {
-            return "dato-tipo dato-tipo--casa";
+        if (tipo === 'Casa') {
+            return 'dato-tipo dato-tipo--casa';
         }
 
-        return "dato-tipo";
+        return 'dato-tipo';
     }
 
     return (
         <li className='list-group-item'>
             <div className='d-flex justify-content-between align-items-start'>
-                <div>
+                <div className='contacto-item__info'>
                     <strong>
                         {contacto.nombre} {contacto.apellido}
                     </strong>
 
-                    <ul className='mt-2 mb-0'>
-                        {(contacto.dato_contacto ?? []).map((dato) => (
-                            <li key={dato.id_dato_contacto}>
-                                <span className={obtenerClaseTipo(dato.tipo)}>{obtenerEtiquetaDato(dato)}:</span>{' '}
-                                {obtenerValorDato(dato) || 'Sin dato'}
-                            </li>
-                        ))}
-                    </ul>
+                    {(contacto.dato_contacto ?? []).length > 0 && (
+                        <ul className='dato-list mt-2 mb-0'>
+                            {(contacto.dato_contacto ?? []).map((dato) => (
+                                <li key={dato.id_dato_contacto} className='dato-item'>
+                                    <span className='dato-item__contenido'>
+                                        <span className={obtenerClaseTipo(dato.tipo)}>
+                                            {obtenerEtiquetaDato(dato)}:
+                                        </span>{' '}
+                                        {obtenerValorDato(dato) || 'Sin dato'}
+                                    </span>
+                                    <button
+                                        className='btn btn-icon btn-outline-danger'
+                                        onClick={() => onEliminarDato(dato.id_dato_contacto)}
+                                        type='button'
+                                        aria-label={`Eliminar ${obtenerEtiquetaDato(dato)}`}
+                                        title={`Eliminar ${obtenerEtiquetaDato(dato)}`}
+                                    >
+                                        ×
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
                 <button
                     className='btn btn-sm btn-outline-danger'
-                    onClick={() => onEliminar(contacto.id_contacto)}
+                    onClick={() => onEliminarContacto(contacto.id_contacto)}
                     type='button'
                 >
-                    Eliminar
+                    Eliminar contacto
                 </button>
             </div>
         </li>
